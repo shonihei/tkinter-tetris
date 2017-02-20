@@ -26,7 +26,8 @@ class Board:
         self.cols = numCols
         self.centerCol = self.cols // 2 - 1
         self.square_width = sqwidth
-        self.__bufferEmpty = True
+        self.currentPieceCoord = None
+        self.currentPieceType = " "
 
     def __repr__(self):
         s = ""
@@ -39,8 +40,20 @@ class Board:
 
     def add_piece(self, piece):
         piece_schematic = Board.pieces[piece]
+        curPieceCoord = []
         for coordinate in piece_schematic:
-            self.board[0-coordinate[1]][self.centerCol-coordinate[0]] = piece
+            coord = (0-coordinate[1], self.centerCol-coordinate[0])
+            self.board[coord[0]][coord[1]] = piece
+            curPieceCoord.append(coord)
+        self.currentPieceCoord = curPieceCoord
+        self.currentPieceType = piece
+
+    def moveCurDown(self):
+        for i in range(len(self.currentPieceCoord)):
+            cod = self.currentPieceCoord[i]
+            self.board[cod[0]][cod[1]] = " "
+            self.currentPieceCoord[i] = (cod[0] + 1, cod[1])
+            self.board[self.currentPieceCoord[i][0]][self.currentPieceCoord[i][1]] = self.currentPieceType
 
     def piece_at(self, row, col):
         return self.board[row][col]
